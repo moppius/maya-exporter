@@ -34,6 +34,7 @@
    <item>
     <widget class="QLineEdit" name="leDefaultTags">
      <property name="text">
+      <string>maya</string>
      </property>
     </widget>
    </item>

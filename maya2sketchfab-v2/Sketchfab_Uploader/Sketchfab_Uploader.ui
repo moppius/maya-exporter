@@ -151,7 +151,7 @@
   </action>
   <action name="actionSketchfab_settings">
    <property name="text">
-    <string>Sketchfab Settings</string>
+    <string>Sketchfab settings</string>
    </property>
   </action>
  </widget>
