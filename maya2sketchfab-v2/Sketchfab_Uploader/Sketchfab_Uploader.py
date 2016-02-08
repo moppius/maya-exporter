@@ -99,14 +99,16 @@ class Sketchfab_Uploader:
 		private = 1 if self.ui_main.cbPrivate.isChecked() else 0
 		password = self.ui_main.lePassword.text() if private else ""
 		tags = cmds.optionVar(query="sfDefaultTags")+" "+self.ui_main.leTags.text()
+		maya_version = cmds.about(version=True)
 
 		data = {
 			'token': cmds.optionVar(query="sfApiToken"),
 			'name': self.ui_main.leModelName.text(),
 			'description': self.ui_main.pteDescription.toPlainText(),
-			'tags': tags,
+			'tags': tags + ' maya',
 			'private': private,
-			'password': password
+			'password': password,
+			'source': 'maya-' + maya_version
 		}
 
 		f = open(model_file, 'rb')
