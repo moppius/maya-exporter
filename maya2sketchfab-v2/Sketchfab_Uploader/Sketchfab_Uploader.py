@@ -104,6 +104,7 @@ class Sketchfab_Uploader:
 
 		# parameters
 		private = 1 if self.ui_main.cbPrivate.isChecked() else 0
+		autopublish = 1 if self.ui_main.cbAutopublish.isChecked() else 0
 		password = self.ui_main.lePassword.text() if private else ""
 		tags = cmds.optionVar(query="sfDefaultTags")+" "+self.ui_main.leTags.text()
 		maya_version = cmds.about(version=True)
@@ -114,6 +115,7 @@ class Sketchfab_Uploader:
 			'description': self.ui_main.pteDescription.toPlainText(),
 			'tags': tags + ' maya',
 			'private': private,
+			'isPublished': autopublish,
 			'password': password,
 			'source': 'maya-' + maya_version
 		}
