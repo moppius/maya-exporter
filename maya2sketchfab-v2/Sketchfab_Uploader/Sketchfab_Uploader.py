@@ -2,10 +2,17 @@ import re, subprocess, os, shutil
 from maya import OpenMayaUI as omui
 from maya import OpenMaya as om
 import maya.cmds as cmds
-from PySide.QtCore import *
-from PySide.QtGui import *
-from PySide.QtUiTools import *
-from shiboken import wrapInstance
+if int(cmds.about(version=True)) < 2017:
+	from PySide.QtCore import *
+	from PySide.QtGui import *
+	from PySide.QtUiTools import *
+	from shiboken import wrapInstance
+else:
+	from PySide2.QtCore import *
+	from PySide2.QtGui import *
+	from PySide2.QtUiTools import *
+	from PySide2.QtWidgets import *
+	from shiboken2 import wrapInstance
 from functools import partial
 import tempfile, os, json, base64
 from time import sleep
@@ -124,7 +131,7 @@ class Sketchfab_Uploader:
 			f.close()
 
 	def uploadToSketchfab(self, data, files):
- 
+
 		try:
 			r = requests.post(self.SKETCHFAB_API_URL, data=data, files=files, verify=False)
 		except requests.exceptions.RequestException as e:
@@ -132,7 +139,7 @@ class Sketchfab_Uploader:
 			return
 
 		result = r.json()
-		 
+
 		if r.status_code != requests.codes.created:
 			self.ui_main.statusbar.showMessage("Upload failed with error: {}".format(result))
 			return
