@@ -90,6 +90,14 @@ class Sketchfab_Uploader:
 		tmp_dir = tempfile.mkdtemp()
 		base_name = '%s/maya2sketchfab' % tmp_dir
 		model_file = '%s.fbx' % base_name
+
+		# Set options
+		import maya.mel as Mm
+		# Force textures embedding
+		Mm.eval('FBXExportEmbeddedTextures -v true')
+		# Force binary fbx export (smaller size)
+		Mm.eval('FBXExportInAscii  -v false')
+
 		# for some reason Maya fails to export to this location when the file does not yet exist
 		# create a dummy file with zero length that has the same name
 		open(model_file, 'w').close()
