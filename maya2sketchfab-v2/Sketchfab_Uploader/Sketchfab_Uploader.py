@@ -2,10 +2,17 @@ import re, subprocess, os, shutil
 from maya import OpenMayaUI as omui
 from maya import OpenMaya as om
 import maya.cmds as cmds
-from PySide.QtCore import *
-from PySide.QtGui import *
-from PySide.QtUiTools import *
-from shiboken import wrapInstance
+if int(cmds.about(version=True)) < 2017:
+	from PySide.QtCore import *
+	from PySide.QtGui import *
+	from PySide.QtUiTools import *
+	from shiboken import wrapInstance
+else:
+	from PySide2.QtCore import *
+	from PySide2.QtGui import *
+	from PySide2.QtUiTools import *
+	from PySide2.QtWidgets import *
+	from shiboken2 import wrapInstance
 from functools import partial
 import tempfile, os, json, base64
 from time import sleep
@@ -83,6 +90,14 @@ class Sketchfab_Uploader:
 		tmp_dir = tempfile.mkdtemp()
 		base_name = '%s/maya2sketchfab' % tmp_dir
 		model_file = '%s.fbx' % base_name
+
+		# Set options
+		import maya.mel as Mm
+		# Force textures embedding
+		Mm.eval('FBXExportEmbeddedTextures -v true')
+		# Force binary fbx export (smaller size)
+		Mm.eval('FBXExportInAscii  -v false')
+
 		# for some reason Maya fails to export to this location when the file does not yet exist
 		# create a dummy file with zero length that has the same name
 		open(model_file, 'w').close()
@@ -97,6 +112,7 @@ class Sketchfab_Uploader:
 
 		# parameters
 		private = 1 if self.ui_main.cbPrivate.isChecked() else 0
+		autopublish = 1 if self.ui_main.cbAutopublish.isChecked() else 0
 		password = self.ui_main.lePassword.text() if private else ""
 		tags = cmds.optionVar(query="sfDefaultTags")+" "+self.ui_main.leTags.text()
 		maya_version = cmds.about(version=True)
@@ -107,6 +123,7 @@ class Sketchfab_Uploader:
 			'description': self.ui_main.pteDescription.toPlainText(),
 			'tags': tags + ' maya',
 			'private': private,
+			'isPublished': autopublish,
 			'password': password,
 			'source': 'maya-' + maya_version
 		}
@@ -124,7 +141,7 @@ class Sketchfab_Uploader:
 			f.close()
 
 	def uploadToSketchfab(self, data, files):
- 
+
 		try:
 			r = requests.post(self.SKETCHFAB_API_URL, data=data, files=files, verify=False)
 		except requests.exceptions.RequestException as e:
@@ -132,7 +149,7 @@ class Sketchfab_Uploader:
 			return
 
 		result = r.json()
-		 
+
 		if r.status_code != requests.codes.created:
 			self.ui_main.statusbar.showMessage("Upload failed with error: {}".format(result))
 			return

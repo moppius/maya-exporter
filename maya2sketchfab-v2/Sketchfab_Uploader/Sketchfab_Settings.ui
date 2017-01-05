@@ -27,7 +27,7 @@
    <item>
     <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>Default tags (separate with spaces)</string>
+      <string>Default tags (separate with spaces, "maya" tag will be added automatically)</string>
      </property>
     </widget>
    </item>
