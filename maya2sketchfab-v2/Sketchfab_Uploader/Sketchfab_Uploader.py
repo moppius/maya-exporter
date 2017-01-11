@@ -2,7 +2,7 @@ import re, subprocess, os, shutil
 from maya import OpenMayaUI as omui
 from maya import OpenMaya as om
 import maya.cmds as cmds
-if int(cmds.about(version=True)) < 2017:
+if int(cmds.about(version=True)[0:4]) < 2017:
 	from PySide.QtCore import *
 	from PySide.QtGui import *
 	from PySide.QtUiTools import *
