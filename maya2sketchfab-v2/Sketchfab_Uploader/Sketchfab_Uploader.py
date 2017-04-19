@@ -115,7 +115,7 @@ class Sketchfab_Uploader:
 		autopublish = 1 if self.ui_main.cbAutopublish.isChecked() else 0
 		password = self.ui_main.lePassword.text() if private else ""
 		tags = cmds.optionVar(query="sfDefaultTags")+" "+self.ui_main.leTags.text()
-		maya_version = cmds.about(version=True)
+		maya_version = cmds.about(version=True).replace(" ", "_")
 
 		data = {
 			'token': cmds.optionVar(query="sfApiToken"),
